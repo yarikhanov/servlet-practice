@@ -1,8 +1,13 @@
 package com.example.servletpractice.controller;
 
+import com.example.servletpractice.entity.Event;
 import com.example.servletpractice.entity.File;
+import com.example.servletpractice.repository.impl.EventRepoImpl;
 import com.example.servletpractice.repository.impl.FileRepoImpl;
+import com.example.servletpractice.repository.impl.UserRepoImpl;
+import com.example.servletpractice.service.EventService;
 import com.example.servletpractice.service.FileService;
+import com.example.servletpractice.service.UserService;
 import com.example.servletpractice.util.JsonUtil;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -22,6 +27,10 @@ import java.util.List;
 public class FileController extends HttpServlet {
 
     private final FileService fileService = new FileService(new FileRepoImpl());
+
+    private final UserService userService = new UserService(new UserRepoImpl());
+
+    private final EventService eventService = new EventService(new EventRepoImpl());
     private final static String PATH = "src/main/resources";
 
 
@@ -61,6 +70,7 @@ public class FileController extends HttpServlet {
                         file.setFilePath(filePath.toString());
                         file.setName(fileName);
                         fileService.addFile(file);
+                        createEvent(file, req);
                 }catch (Exception e){
                         System.err.println(e.getMessage());}
                 }
@@ -101,5 +111,12 @@ public class FileController extends HttpServlet {
         } catch (IOException e) {
             System.err.println(e.getMessage());
         }
+    }
+
+    private void createEvent(File file, HttpServletRequest req){
+        Event event = new Event();
+        event.setFile(file);
+        event.setUser(userService.getUserById(Integer.parseInt(req.getHeader("user_id"))));
+        eventService.addEvent(event);
     }
 }
