@@ -26,7 +26,7 @@ import java.util.List;
 @WebServlet("/files/*")
 public class FileController extends HttpServlet {
 
-    private final FileService fileService = new FileService(new FileRepoImpl());
+    private final FileService fileService = new FileService(new FileRepoImpl(), new UserRepoImpl(), new EventRepoImpl());
 
     private final UserService userService = new UserService(new UserRepoImpl());
 
@@ -69,8 +69,8 @@ public class FileController extends HttpServlet {
                         File file = new File();
                         file.setFilePath(filePath.toString());
                         file.setName(fileName);
-                        fileService.addFile(file);
-                        createEvent(file, req);
+                        fileService.addFile(file, Integer.parseInt(req.getHeader("user_id")));
+
                 }catch (Exception e){
                         System.err.println(e.getMessage());}
                 }
@@ -113,10 +113,4 @@ public class FileController extends HttpServlet {
         }
     }
 
-    private void createEvent(File file, HttpServletRequest req){
-        Event event = new Event();
-        event.setFile(file);
-        event.setUser(userService.getUserById(Integer.parseInt(req.getHeader("user_id"))));
-        eventService.addEvent(event);
-    }
 }
