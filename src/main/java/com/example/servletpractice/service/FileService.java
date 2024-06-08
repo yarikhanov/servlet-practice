@@ -8,7 +8,7 @@ import java.util.List;
 
 public class FileService {
 
-    private FileRepo fileRepo;
+    private final FileRepo fileRepo;
 
     public FileService(FileRepo fileRepo) {
         this.fileRepo = fileRepo;

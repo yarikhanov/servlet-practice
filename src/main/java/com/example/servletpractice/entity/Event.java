@@ -23,6 +23,7 @@ public class Event {
     @JoinColumn(name = "user_id")
     private User user;
     @OneToOne
+    @JoinColumn(name = "file_id")
     private File file;
 
     public Integer getId() {
